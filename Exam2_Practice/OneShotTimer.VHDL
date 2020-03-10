@@ -7,52 +7,53 @@ use IEEE.STD_LOGIC_UNSIGNED.ALL;
 entity oneShotTimer is
     port(
           control_register : in std_logic_vector( 5 downto 0 ) := ( others => '0' );
-          clk, start_pulse : in std_logic;
-          output_pulse     : out std_logic
+          clk, rst, go, stop : in std_logic;
+          pulse     : out std_logic
          );
 end entity;
 
 architecture arch of oneShotTimer is
 
-    signal done_flag : boolean := FALSE;
-    signal trigger_flag : boolean := FALSE;
-    signal start_counter_flag : boolean := FALSE;
-
+    type TIMER_STATE is ( IDLE, COUNTING );
+    signal PRES_STATE, NEXT_STATE : TIMER_STATE;
+    signal COUNT_TARGET : integer := 0;
 begin
 
-    TRIGGER : process( clk ) begin
+    SET_PRESENT_REGISTER_STATE : process( clk, rst ) begin
 
-        if( trigger_flag = FALSE ) then wait on start_pulse;
+        if( rst = '1' ) then PRES_STATE <= IDLE;
+            elsif( rising_edge( clk ) ) then PRES_STATE <= NEXT_STATE;
         end if;
 
-        trigger_flag <= TRUE;
-
-    ene process TRIGGER;
+    end process SET_PRESENT_REGISTER_STATE;
 
 
-    INIT : process
+    process( PRES_STATE, go, stop )
 
-        variable TMP_CONTROL_REGISTER : std_logic_vector( 5 downto 0 ) := ( others => '0' );
-        variable COUNT_TARGET : integer := 0;
 
     begin
+        COUNT_TARGET <= conv_integer( control_register );
+        pulse <= '0';
 
-        wait until trigger_flag = TRUE;
+        case( PRES_STATE ) is
 
-        TMP_CONTROL_REGISTER := control_register;
-        COUNT_TARGET := conv_integer( TMP_CONTROL_REGISTER );
+            when idle =>
 
-        for index in 0 to COUNT_TARGET loop
+                if( go = '1' ) then NEXT_STATE <= COUNTING;
+                    else NEXT_STATE <= IDLE;
+                end if;
 
-            if( rising_edge( clk ) ) then
-
-                count := count + 1;
-            end if;
-        end loop;
-
-        done_flag <= TRUE;
-
-    end process INIT;
+            when COUNTING =>
 
 
+                for index in 0 to COUNT_TARGET loop
+
+                    wait until rising_edge( clk );
+
+                end loop;
+                NEXT_STATE <= IDLE;
+
+
+        end case;
+    end process;
 end arch;
