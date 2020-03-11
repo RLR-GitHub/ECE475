@@ -9,7 +9,7 @@ end ROM;
 
 architecture beh of ROM is
 
-  type ROM is array( 15 downto 0 ) of std_logic_vector( 3 downto 0 ) := ( others => '0' );
+  type ROM is array( 0 to 15 ) of std_logic_vector( 3 downto 0 ) := ( others => '0' );
   constant FSM_ROM : ROM := ( "1001", "1010", "0000", "0001",
                               "1001", "1010", "0000", "0001",
                               "1001", "1010", "0000", "0001",
