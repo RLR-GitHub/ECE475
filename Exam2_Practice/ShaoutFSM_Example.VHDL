@@ -14,20 +14,19 @@ architecture FSM of seq_design is
 
 begin
 
-    state_reg: process(clock, reset) -- cocurrent process#1: state registers
-    begin
+state_reg: process(clock, reset) -- cocurrent process#1: state registers
+begin
+	
 	if (reset='1') then current_state <= S0;
 		elsif (clock'event and clock='1') then current_state <= next_state;
 	end if;
+		
+end process;					  
 
-    end process;					  
+comb_logic: process(current_state, a)   -- cocurrent process#2: combinational logic
+begin
 
-    comb_logic: process(current_state, a)   -- cocurrent process#2: combinational logic
-    begin
-	-- use case statement to show the 
-	-- state transistion
-
-case current_state is
+	case current_state is -- use case statement to show the state transistion
 	    when S0 =>	x <= '0';
 			if a='0' then next_state <= S1;
 				elsif a ='1' then next_state <= S0;
