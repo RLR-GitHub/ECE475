@@ -1,5 +1,7 @@
 ECE475: Computer Hardware Design (VHDL)
 
+**[📄 View the Final Project PDF](https://github.com/RLR-GitHub/ECE475/blob/master/ECE475_FinalProject_RLR-1.pdf)**
+
 This course introduces fundamental concepts and practical skills for computer hardware design using VHDL. Students gain hands-on experience in modeling, simulating, and implementing digital systems, focusing on embedded solutions and real-world applications.
 Course Highlights
 
